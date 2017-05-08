@@ -7,7 +7,7 @@ import com.example.auction.security.SecurityHeaderFilter
 import com.example.auction.utils.PaginatedSequence
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.lightbend.lagom.scaladsl.api.transport.Method
-import com.lightbend.lagom.scaladsl.api.{Service, ServiceCall}
+import com.lightbend.lagom.scaladsl.api.{Service, ServiceAcl, ServiceCall}
 
 trait ItemService extends Service {
   /**
@@ -60,5 +60,7 @@ trait ItemService extends Service {
     ).withTopics(
       topic("item-ItemEvent", this.itemEvents)
     ).withHeaderFilter(SecurityHeaderFilter.Composed)
+      .withAutoAcl(true)
+      .withAcls(ServiceAcl.forMethodAndPathRegex(Method.OPTIONS, "/api/item/[^/]*"))
   }
 }

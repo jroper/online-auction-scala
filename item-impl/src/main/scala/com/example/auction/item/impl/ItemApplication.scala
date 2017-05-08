@@ -11,6 +11,7 @@ import com.softwaremill.macwire._
 import com.typesafe.conductr.bundlelib.lagom.scaladsl.ConductRApplicationComponents
 import play.api.Environment
 import play.api.libs.ws.ahc.AhcWSComponents
+import play.filters.cors.CORSComponents
 
 import scala.concurrent.ExecutionContext
 
@@ -31,9 +32,12 @@ trait ItemComponents extends LagomServerComponents
 abstract class ItemApplication(context: LagomApplicationContext) extends LagomApplication(context)
   with ItemComponents
   with AhcWSComponents
-  with LagomKafkaComponents {
+  with LagomKafkaComponents
+  with CORSComponents {
 
   lazy val biddingService = serviceClient.implement[BiddingService]
+
+  override lazy val httpFilters = Seq(corsFilter)
 
   wire[BiddingServiceSubscriber]
 }
